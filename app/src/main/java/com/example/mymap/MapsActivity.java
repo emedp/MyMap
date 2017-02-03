@@ -183,15 +183,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
         int distancia = (int) SphericalUtil.computeDistanceBetween(myposition, destino);
         if (distancia > 200) {
-            Toast.makeText(this, "BRRR esto esta CONGELAO'\nEstas a" + distancia + "m del punto", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "BRRR esto esta CONGELAO'\nEstas a " + distancia + "m del punto", Toast.LENGTH_LONG).show();
         } else if (distancia > 150) {
-            Toast.makeText(this, "Hace algo de frío...\nEstas a" + distancia + "m del punto", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Hace algo de frío...\nEstas a " + distancia + "m del punto", Toast.LENGTH_LONG).show();
         } else if (distancia > 100) {
-            Toast.makeText(this, "Templado templado\nEstas a" + distancia + "m del punto", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Templado templado\nEstas a " + distancia + "m del punto", Toast.LENGTH_LONG).show();
         } else if (distancia > 50) {
-            Toast.makeText(this, "Algo de calor hace\nEstas a" + distancia + "m del punto", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Algo de calor hace\nEstas a " + distancia + "m del punto", Toast.LENGTH_LONG).show();
         } else if (distancia > 20) {
-            Toast.makeText(this, "¡MUY CALIENTE!\nEstas a" + distancia + "m del punto", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "¡MUY CALIENTE!\nEstas a " + distancia + "m del punto", Toast.LENGTH_LONG).show();
         } else if (distancia <= 20) {
             Toast.makeText(this, "¡Lo encontraste!", Toast.LENGTH_LONG).show();
             Tesoro.setVisible(true);
