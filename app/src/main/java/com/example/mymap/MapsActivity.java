@@ -17,7 +17,6 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback,
@@ -29,7 +28,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private GoogleMap mMap;
     private GoogleApiClient mGoogleApiClient;
     private Location myLocation;
-    LatLng myLatLng;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -68,7 +66,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         LatLng treasure_latlng = new LatLng(42.236905, -8.712710);
         mMap.addMarker(new MarkerOptions().position(treasure_latlng).title("tesoro"));
-
     }
 
     @Override
@@ -88,7 +85,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                 myLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
                 if (myLocation != null) {
-                    myLatLng = new LatLng(myLocation.getLatitude(),myLocation.getLongitude());
+
                 } else {
                     Toast.makeText(this, "Ubicación no encontrada", Toast.LENGTH_LONG).show();
                 }
@@ -115,7 +112,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         } else {
             myLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
             if (myLocation != null) {
-                myLatLng = new LatLng(myLocation.getLatitude(),myLocation.getLongitude());
+
             } else {
                 Toast.makeText(this, "Ubicación no encontrada", Toast.LENGTH_LONG).show();
             }
