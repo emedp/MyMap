@@ -36,6 +36,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private LatLng myposition; //variable donde se guarda Latitud y Longitud
     private LatLng treasure = new LatLng(42.236905, -8.712710); //lugar del tesoro
+    LatLng center = new LatLng(42.237024, -8.713554); //centro del circulo
     private Button distancia;
 
     @Override
@@ -94,7 +95,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.addMarker(new MarkerOptions().position(treasure).title("tesoro").visible(false));
 
         //adición del circulo donde se encuentra la marca
-        LatLng center = new LatLng(42.237024, -8.713554);
+
         CircleOptions treasure_zone = new CircleOptions()
                 .center(center)
                 .radius(100)
@@ -129,7 +130,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 }
                 myposition = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
                 //una vez cargada mi localización se anima el mapa hasta ella
-                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(myposition, 14));
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(center, 17));
             }
         } else {
             //el permiso no ha sido concendido por el usuario
@@ -154,7 +155,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
             myposition = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
             //una vez cargada mi localización se anima el mapa hasta ella
-            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(myposition, 14));
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(center, 17));
         } else {
             //al no cumplirse el if significa que el permiso no esta concedido por lo que se pide
             ActivityCompat.requestPermissions(this, new String[]{
