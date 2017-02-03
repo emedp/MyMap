@@ -115,7 +115,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 }
                 myposition = new LatLng(myLocation.getLatitude(),myLocation.getLongitude());
                 //una vez cargada mi localización se anima el mapa hasta ella
-                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(myposition,14));}
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(myposition,14));
+                CalculateDistance(treasure_latlng);
+            }
         } else {
             //el permiso no ha sido concendido por el usuario
         }
@@ -140,6 +142,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             myposition = new LatLng(myLocation.getLatitude(),myLocation.getLongitude());
             //una vez cargada mi localización se anima el mapa hasta ella
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(myposition,14));
+            CalculateDistance(treasure_latlng);
         } else {
             //al no cumplirse el if significa que el permiso no esta concedido por lo que se pide
             ActivityCompat.requestPermissions(this, new String[]{
@@ -154,7 +157,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      */
     public void CalculateDistance(LatLng destino){
         int distancia = (int) SphericalUtil.computeDistanceBetween(myposition, destino);
-        Toast.makeText(this, "Estas a "+distancia+"m del punto", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Estas a "+distancia+"m del punto", Toast.LENGTH_LONG).show();
     }
 
     @Override
