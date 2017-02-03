@@ -37,8 +37,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private Marker Tesoro;
     private LatLng treasure = new LatLng(42.236905, -8.712710); //lugar del tesoro
+    private Location myLocation;
     private LatLng myposition; //variable donde se guarda Latitud y Longitud
-    LatLng center = new LatLng(42.237024, -8.713554); //centro del circulo
+    private LatLng center = new LatLng(42.237024, -8.713554); //centro del circulo
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -125,7 +126,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             //comprueba si la petición es la de recoger la ubicación del usuario
             if (requestCode == REQUEST_LOCATION) {
                 //realiza el mismo codigo que en el caso de que ya estuvieran concedidos
-                Location myLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+                myLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
                 if (myLocation != null) {
                     myposition = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
                     //una vez cargada mi localización se anima el mapa hasta el circulo donde se esconde el tesoro
@@ -149,7 +150,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
             //en caso de ya tener los permisos ejecuta el codigo correspondiente
-            Location myLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+            myLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
             if (myLocation != null) {
                 myposition = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
                 //una vez cargada mi localización se anima el mapa hasta el circulo donde se esconde el tesoro
@@ -170,6 +171,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      * @param destino recoge las coordenadas del punto al que se mide la distancia
      */
     public void CalculateDistance(LatLng destino) {
+        //cada vez que el usuario llame al metodo la variable myposition se actualizará gracias al API de cliente de google
+        //con la posicion actualizada se obtiene la distancia precisa
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+            //en caso de ya tener los permisos ejecuta el codigo correspondiente
+            myLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+            if (myLocation != null) {
+                myposition = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
+            }
+        }
         int distancia = (int) SphericalUtil.computeDistanceBetween(myposition, destino);
         if (distancia > 200) {
             Toast.makeText(this, "BRRR esto esta CONGELAO'\nEstas a" + distancia + "m del punto", Toast.LENGTH_LONG).show();
