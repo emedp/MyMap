@@ -94,9 +94,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             if (requestCode == REQUEST_LOCATION) {
                 //realiza el mismo codigo que en el caso de que ya estuvieran concedidos
                 myLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-                if (myLocation != null) {
-
-                } else {
+                if (myLocation == null) {
                     Toast.makeText(this, "Ubicación no encontrada", Toast.LENGTH_LONG).show();
                 }
             }
@@ -118,12 +116,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 == PackageManager.PERMISSION_GRANTED) {
             //en caso de ya tener los permisos ejecuta el codigo correspondiente
             myLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-            if (myLocation != null) {
-
-            } else {
+            if (myLocation == null) {
                 Toast.makeText(this, "Ubicación no encontrada", Toast.LENGTH_LONG).show();
             }
-
         } else {
             //al no cumplirse el if significa que el permiso no esta concedido por lo que se pide
             ActivityCompat.requestPermissions(this, new String[]{
