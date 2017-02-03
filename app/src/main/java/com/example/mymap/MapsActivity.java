@@ -1,6 +1,7 @@
 package com.example.mymap;
 
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -17,6 +18,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.android.SphericalUtil;
@@ -29,8 +31,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private static final int REQUEST_LOCATION = 2; //obtencion de latitud y longitud
     private GoogleMap mMap; //mapa de google con el que se trabaja
     private GoogleApiClient mGoogleApiClient; //API de cliente para recoger la ubicacion
-    private LatLng myposition; //variable donde se guarda Latitud y Longitud
 
+    private LatLng myposition; //variable donde se guarda Latitud y Longitud
+    private LatLng treasure_latlng = new LatLng(42.236905, -8.712710); //lugar del tesoro
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -49,6 +52,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     /**
+     * este metodo sobreescribe el mapa vacio que da la clase googleMap, a este mapa se le ha añadido
+     * la posición del usuario
+     * una marca invisible que indica el tesoro
+     * un circulo que delimita la zona donde se puede encontrar la marca
      * @param googleMap se pasa como parametro el mapa de google sobre cual se va a trabajar
      */
     @Override
@@ -69,9 +76,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.getUiSettings().setZoomControlsEnabled(true); //botones de zoom activados
         mMap.getUiSettings().setMapToolbarEnabled(false); //toolbar innecesario desactivado
 
-        //markers
-        LatLng treasure_latlng = new LatLng(42.236905, -8.712710);
-        mMap.addMarker(new MarkerOptions().position(treasure_latlng).title("tesoro"));
+        //adición de marca invisible en el mapa del lugar del tesoro
+        mMap.addMarker(new MarkerOptions().position(treasure_latlng).title("tesoro").visible(false));
+
+        //adición del circulo donde se encuentra la marca
+        LatLng center = new LatLng(42.237024, -8.713554);
+        CircleOptions treasure_zone = new CircleOptions()
+                .center(center)
+                .radius(100)
+                .strokeColor(Color.parseColor("#084B8A"));
+        mMap.addCircle(treasure_zone);
     }
 
     /**
