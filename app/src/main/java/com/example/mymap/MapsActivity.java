@@ -37,7 +37,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private LatLng myposition; //variable donde se guarda Latitud y Longitud
     private LatLng treasure = new LatLng(42.236905, -8.712710); //lugar del tesoro
     LatLng center = new LatLng(42.237024, -8.713554); //centro del circulo
-    private Button distancia;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +55,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .build();
 
         //relacionado boton con boton del xml
-        distancia = (Button) findViewById(R.id.distancia);
+        Button distancia = (Button) findViewById(R.id.distancia);
         distancia.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -112,7 +111,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      * @param grantResults devuelve una lista con los permisos grantizados
      */
     @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         //comprueba si el permiso ACCESS_FINE_LOCATION ha sido concedido
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
@@ -125,15 +124,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             if (requestCode == REQUEST_LOCATION) {
                 //realiza el mismo codigo que en el caso de que ya estuvieran concedidos
                 Location myLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-                if (myLocation == null) {
-                    Toast.makeText(this, "Ubicación no encontrada", Toast.LENGTH_LONG).show();
+                if (myLocation != null) {
+                    myposition = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
+                    //una vez cargada mi localización se anima el mapa hasta el circulo donde se esconde el tesoro
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(center, 17));
                 }
-                myposition = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
-                //una vez cargada mi localización se anima el mapa hasta ella
+                //una vez cargada mi localización se anima el mapa hasta el circulo donde se esconde el tesoro
                 mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(center, 17));
             }
-        } else {
-            //el permiso no ha sido concendido por el usuario
         }
     }
 
@@ -141,7 +139,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      * cuando el cliente de google se conecta llama a este método para asignar la ubicación del usuario
      * con el atributo de clase myLocation
      *
-     * @param bundle
+     * @param bundle recoge el bundle
      */
     @Override
     public void onConnected(@Nullable Bundle bundle) {
@@ -150,12 +148,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 == PackageManager.PERMISSION_GRANTED) {
             //en caso de ya tener los permisos ejecuta el codigo correspondiente
             Location myLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-            if (myLocation == null) {
-                Toast.makeText(this, "Ubicación no encontrada", Toast.LENGTH_LONG).show();
+            if (myLocation != null) {
+                myposition = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
+                //una vez cargada mi localización se anima el mapa hasta el circulo donde se esconde el tesoro
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(center, 17));
             }
-            myposition = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
-            //una vez cargada mi localización se anima el mapa hasta ella
-            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(center, 17));
         } else {
             //al no cumplirse el if significa que el permiso no esta concedido por lo que se pide
             ActivityCompat.requestPermissions(this, new String[]{
@@ -167,7 +164,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      * este metodo calcula la distancia que hay entre la posicion del usuario con la del destino
      * mostrando un toast con la distancia en metros.
      *
-     * @param destino
+     * @param destino recoge las coordenadas del punto al que se mide la distancia
      */
     public void CalculateDistance(LatLng destino) {
         int distancia = (int) SphericalUtil.computeDistanceBetween(myposition, destino);
