@@ -163,23 +163,23 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     /**
-     * este metodo calcula la distancia que hay entre la posicion del usuario con la del destino
-     * mostrando un toast con la distancia en metros.
-     *
+     * calcula la distancia en metros de la posicion del usuario hasta el destino
+     * segun la distancia en metros indica al usuario si esta cerca o lejos con las palabras
+     * frio o caliente si esta a 20 m o menos le muestra la marca del tesoro si no un mensaje con la distancia
      * @param destino recoge las coordenadas del punto al que se mide la distancia
      */
     public void CalculateDistance(LatLng destino) {
         int distancia = (int) SphericalUtil.computeDistanceBetween(myposition, destino);
         if(distancia >200){
-            Toast.makeText(this, "Muy frío", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "BRRR esto esta CONGELAO'\nEstas a"+distancia+"m del punto", Toast.LENGTH_LONG).show();
         } else if(distancia > 150){
-            Toast.makeText(this, "Frío", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Hace algo de frío...\nEstas a"+distancia+"m del punto", Toast.LENGTH_LONG).show();
         } else if(distancia > 100){
-            Toast.makeText(this, "Templado", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Templado templado\nEstas a"+distancia+"m del punto", Toast.LENGTH_LONG).show();
         } else if(distancia > 50){
-            Toast.makeText(this, "Caliente", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Algo de calor hace\nEstas a"+distancia+"m del punto", Toast.LENGTH_LONG).show();
         } else if(distancia > 20){
-            Toast.makeText(this, "¡MUY CALIENTE!", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "¡MUY CALIENTE!\nEstas a"+distancia+"m del punto", Toast.LENGTH_LONG).show();
         } else if(distancia <=20){
             Toast.makeText(this, "¡Lo encontraste!", Toast.LENGTH_LONG).show();
             Tesoro.setVisible(true);
