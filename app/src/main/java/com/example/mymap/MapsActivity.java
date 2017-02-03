@@ -21,23 +21,23 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener{
+        GoogleApiClient.OnConnectionFailedListener {
 
     private static final int LOCATION_REQUEST_CODE = 1; //peticion de la ubicacion
     private static final int REQUEST_LOCATION = 2; //obtencion de latitud y longitud
-    private GoogleMap mMap;
-    private GoogleApiClient mGoogleApiClient;
-    private Location myLocation;
+    private GoogleMap mMap; //mapa de google con el que se trabaja
+    private GoogleApiClient mGoogleApiClient; //API de cliente para recoger la ubicacion
+    private Location myLocation; //localizacion donde se guardan las variables de latitud y longitud
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
-        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
+        // construccion del cliente google asignando los metodos de las interfaces que lo complementan
         mGoogleApiClient = new GoogleApiClient.Builder(this)
                 .addConnectionCallbacks(this)
                 .addOnConnectionFailedListener(this)
@@ -46,31 +46,45 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .build();
     }
 
+    /**
+     * @param googleMap se pasa como parametro el mapa de google sobre cual se va a trabajar
+     */
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
+        mMap = googleMap; //asignacion del mapa con el atributo de clase instanciado
 
-        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+        //comprobación del permiso para poder utilizar el GPS
+        if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+            //si se ha concedido permiso la localizacion se hace visible
             mMap.setMyLocationEnabled(true);
         } else {
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this, android.Manifest.permission.ACCESS_FINE_LOCATION)) {
-                // Mostrar diálogo explicativo
-            } else {
-                // Solicitar permiso
-                ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_REQUEST_CODE);
-            }
+            //si no se tiene acceso al GPS se pide el permiso
+            ActivityCompat.requestPermissions(this, new String[]
+                    {android.Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_REQUEST_CODE);
         }
+        //configuracion del mapa
+        mMap.getUiSettings().setZoomControlsEnabled(true); //botones de zoom activados
+        mMap.getUiSettings().setMapToolbarEnabled(false); //toolbar innecesario desactivado
 
-        mMap.getUiSettings().setZoomControlsEnabled(true);
-        mMap.getUiSettings().setMapToolbarEnabled(false);
-
+        //markers
         LatLng treasure_latlng = new LatLng(42.236905, -8.712710);
         mMap.addMarker(new MarkerOptions().position(treasure_latlng).title("tesoro"));
     }
 
+    /**
+     * Después de haber hecho una petición de permisos se tratan en este metodo, confirmando
+     * el codigo que pedia ser devuelto
+     *
+     * @param requestCode  comprueba que peticion se esta tratando
+     * @param permissions  no se trata
+     * @param grantResults devuelve una lista con los permisos grantizados
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        //petición para hacer la localizacion disponible
         if (requestCode == LOCATION_REQUEST_CODE) {
+            //comprobacion de permisos
             if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
                     != PackageManager.PERMISSION_GRANTED &&
                     ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION)
@@ -79,10 +93,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
             mMap.setMyLocationEnabled(true);
         }
+        //petición para obtener la ubicación del usuario
         if (requestCode == REQUEST_LOCATION) {
             if (grantResults.length == 1
                     && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
+                /**
+                 * se asigna al atributo de clase myLocation la ultima ubicacion conocida del GPS
+                 * a través de la petición al cliente de Google
+                 */
                 myLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
                 if (myLocation != null) {
 
@@ -95,20 +113,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
+    /**
+     * cuando el cliente de google se conecta llama a este método para asignar la ubicación del usuario
+     * con el atributo de clase myLocation
+     *
+     * @param bundle
+     */
     @Override
     public void onConnected(@Nullable Bundle bundle) {
+        //se comprueba si el permiso del GPS no esta autorizado
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
-
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                    android.Manifest.permission.ACCESS_FINE_LOCATION)) {
-                // Aquí muestras confirmación explicativa al usuario
-                // por si rechazó los permisos anteriormente
-            } else {
-                ActivityCompat.requestPermissions(
-                        this, new String[]{android.Manifest.permission.ACCESS_FINE_LOCATION},
-                        REQUEST_LOCATION);
-            }
+            //si al conectar el cliente no tiene permisos para acceder al GPS se vuelven a pedir
+            ActivityCompat.requestPermissions(this, new String[]{
+                    android.Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION);
         } else {
             myLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
             if (myLocation != null) {
@@ -129,12 +147,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
+    /**
+     * cuando se lanza la aplicación la API del cliente de google se conecta al servidor
+     */
     @Override
     protected void onStart() {
         super.onStart();
         mGoogleApiClient.connect();
     }
 
+    /**
+     * en caso de que se pare la aplicacion el cliente de google se desconecta
+     */
     @Override
     protected void onStop() {
         super.onStop();
