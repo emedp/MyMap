@@ -13,6 +13,7 @@ import android.widget.Toast;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -27,7 +28,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private static final int REQUEST_LOCATION = 2; //obtencion de latitud y longitud
     private GoogleMap mMap; //mapa de google con el que se trabaja
     private GoogleApiClient mGoogleApiClient; //API de cliente para recoger la ubicacion
-    private Location myLocation; //localizacion donde se guardan las variables de latitud y longitud
+    private LatLng myposition; //variable donde se guarda Latitud y Longitud
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,11 +94,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             //comprueba si la petición es la de recoger la ubicación del usuario
             if (requestCode == REQUEST_LOCATION) {
                 //realiza el mismo codigo que en el caso de que ya estuvieran concedidos
-                myLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+                Location myLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
                 if (myLocation == null) {
                     Toast.makeText(this, "Ubicación no encontrada", Toast.LENGTH_LONG).show();
                 }
-            }
+                myposition = new LatLng(myLocation.getLatitude(),myLocation.getLongitude());
+                //una vez cargada mi localización se anima el mapa hasta ella
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(myposition,14));}
         } else {
             //el permiso no ha sido concendido por el usuario
         }
@@ -115,10 +118,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
             //en caso de ya tener los permisos ejecuta el codigo correspondiente
-            myLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
+            Location myLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
             if (myLocation == null) {
                 Toast.makeText(this, "Ubicación no encontrada", Toast.LENGTH_LONG).show();
             }
+            myposition = new LatLng(myLocation.getLatitude(),myLocation.getLongitude());
+            //una vez cargada mi localización se anima el mapa hasta ella
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(myposition,14));
         } else {
             //al no cumplirse el if significa que el permiso no esta concedido por lo que se pide
             ActivityCompat.requestPermissions(this, new String[]{
