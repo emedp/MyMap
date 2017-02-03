@@ -19,6 +19,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.maps.android.SphericalUtil;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
@@ -130,6 +131,16 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             ActivityCompat.requestPermissions(this, new String[]{
                     android.Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION);
         }
+    }
+
+    /**
+     * este metodo calcula la distancia que hay entre la posicion del usuario con la del destino
+     * mostrando un toast con la distancia en metros.
+     * @param destino
+     */
+    public void CalculateDistance(LatLng destino){
+        int distancia = (int) SphericalUtil.computeDistanceBetween(myposition, destino);
+        Toast.makeText(this, "Estas a "+distancia+"m del punto", Toast.LENGTH_SHORT).show();
     }
 
     @Override
