@@ -9,6 +9,8 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -25,7 +27,7 @@ import com.google.maps.android.SphericalUtil;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener {
+        GoogleApiClient.OnConnectionFailedListener{
 
     private static final int LOCATION_REQUEST_CODE = 1; //peticion de la ubicacion
     private static final int REQUEST_LOCATION = 2; //obtencion de latitud y longitud
@@ -33,7 +35,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private GoogleApiClient mGoogleApiClient; //API de cliente para recoger la ubicacion
 
     private LatLng myposition; //variable donde se guarda Latitud y Longitud
-    private LatLng treasure_latlng = new LatLng(42.236905, -8.712710); //lugar del tesoro
+    private LatLng treasure = new LatLng(42.236905, -8.712710); //lugar del tesoro
+    private Button distancia;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -50,6 +53,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 .addApi(LocationServices.API)
                 .enableAutoManage(this, this)
                 .build();
+
+        //relacionado boton con boton del xml
+        distancia = (Button) findViewById(R.id.distancia);
+        distancia.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                CalculateDistance(treasure);
+            }
+        });
     }
 
     /**
@@ -79,7 +91,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.getUiSettings().setMapToolbarEnabled(false); //toolbar innecesario desactivado
 
         //adición de marca invisible en el mapa del lugar del tesoro
-        mMap.addMarker(new MarkerOptions().position(treasure_latlng).title("tesoro").visible(false));
+        mMap.addMarker(new MarkerOptions().position(treasure).title("tesoro").visible(false));
 
         //adición del circulo donde se encuentra la marca
         LatLng center = new LatLng(42.237024, -8.713554);
