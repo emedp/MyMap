@@ -34,6 +34,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private LatLng myposition; //variable donde se guarda Latitud y Longitud
     private LatLng treasure_latlng = new LatLng(42.236905, -8.712710); //lugar del tesoro
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,6 +57,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      * la posición del usuario
      * una marca invisible que indica el tesoro
      * un circulo que delimita la zona donde se puede encontrar la marca
+     *
      * @param googleMap se pasa como parametro el mapa de google sobre cual se va a trabajar
      */
     @Override
@@ -113,10 +115,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 if (myLocation == null) {
                     Toast.makeText(this, "Ubicación no encontrada", Toast.LENGTH_LONG).show();
                 }
-                myposition = new LatLng(myLocation.getLatitude(),myLocation.getLongitude());
+                myposition = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
                 //una vez cargada mi localización se anima el mapa hasta ella
-                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(myposition,14));
-                CalculateDistance(treasure_latlng);
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(myposition, 14));
             }
         } else {
             //el permiso no ha sido concendido por el usuario
@@ -139,10 +140,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             if (myLocation == null) {
                 Toast.makeText(this, "Ubicación no encontrada", Toast.LENGTH_LONG).show();
             }
-            myposition = new LatLng(myLocation.getLatitude(),myLocation.getLongitude());
+            myposition = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
             //una vez cargada mi localización se anima el mapa hasta ella
-            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(myposition,14));
-            CalculateDistance(treasure_latlng);
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(myposition, 14));
         } else {
             //al no cumplirse el if significa que el permiso no esta concedido por lo que se pide
             ActivityCompat.requestPermissions(this, new String[]{
@@ -153,11 +153,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     /**
      * este metodo calcula la distancia que hay entre la posicion del usuario con la del destino
      * mostrando un toast con la distancia en metros.
+     *
      * @param destino
      */
-    public void CalculateDistance(LatLng destino){
+    public void CalculateDistance(LatLng destino) {
         int distancia = (int) SphericalUtil.computeDistanceBetween(myposition, destino);
-        Toast.makeText(this, "Estas a "+distancia+"m del punto", Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "Estas a " + distancia + "m del punto", Toast.LENGTH_LONG).show();
     }
 
     @Override
