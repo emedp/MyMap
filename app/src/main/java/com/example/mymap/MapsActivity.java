@@ -59,7 +59,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             //si se ha concedido permiso la localizacion se hace visible
             mMap.setMyLocationEnabled(true);
         } else {
-            //si no se tiene acceso al GPS se pide el permiso
+            //al no cumplirse el if significa que el permiso no esta concedido por lo que se pide
             ActivityCompat.requestPermissions(this, new String[]
                     {android.Manifest.permission.ACCESS_FINE_LOCATION}, LOCATION_REQUEST_CODE);
         }
@@ -82,34 +82,26 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      */
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        //petición para hacer la localizacion disponible
-        if (requestCode == LOCATION_REQUEST_CODE) {
-            //comprobacion de permisos
-            if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
-                    != PackageManager.PERMISSION_GRANTED &&
-                    ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION)
-                            != PackageManager.PERMISSION_GRANTED) {
-                return;
+        //comprueba si el permiso ACCESS_FINE_LOCATION ha sido concedido
+        if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
+                == PackageManager.PERMISSION_GRANTED) {
+            //comprueba si la petición es la de hacer la ubicación disponible
+            if (requestCode == LOCATION_REQUEST_CODE) {
+                //realiza el mismo codigo que en el caso de que ya estuvieran concedidos
+                mMap.setMyLocationEnabled(true);
             }
-            mMap.setMyLocationEnabled(true);
-        }
-        //petición para obtener la ubicación del usuario
-        if (requestCode == REQUEST_LOCATION) {
-            if (grantResults.length == 1
-                    && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                /**
-                 * se asigna al atributo de clase myLocation la ultima ubicacion conocida del GPS
-                 * a través de la petición al cliente de Google
-                 */
+            //comprueba si la petición es la de recoger la ubicación del usuario
+            if (requestCode == REQUEST_LOCATION) {
+                //realiza el mismo codigo que en el caso de que ya estuvieran concedidos
                 myLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
                 if (myLocation != null) {
 
                 } else {
                     Toast.makeText(this, "Ubicación no encontrada", Toast.LENGTH_LONG).show();
                 }
-            } else {
-                Toast.makeText(this, "Permisos no otorgados", Toast.LENGTH_LONG).show();
             }
+        } else {
+            //el permiso no ha sido concendido por el usuario
         }
     }
 
@@ -121,19 +113,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      */
     @Override
     public void onConnected(@Nullable Bundle bundle) {
-        //se comprueba si el permiso del GPS no esta autorizado
+        //se comprueba si el permiso del GPS esta autorizado
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED) {
-            //si al conectar el cliente no tiene permisos para acceder al GPS se vuelven a pedir
-            ActivityCompat.requestPermissions(this, new String[]{
-                    android.Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION);
-        } else {
+                == PackageManager.PERMISSION_GRANTED) {
+            //en caso de ya tener los permisos ejecuta el codigo correspondiente
             myLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
             if (myLocation != null) {
 
             } else {
                 Toast.makeText(this, "Ubicación no encontrada", Toast.LENGTH_LONG).show();
             }
+
+        } else {
+            //al no cumplirse el if significa que el permiso no esta concedido por lo que se pide
+            ActivityCompat.requestPermissions(this, new String[]{
+                    android.Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_LOCATION);
         }
     }
 
