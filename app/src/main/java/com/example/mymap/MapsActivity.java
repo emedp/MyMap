@@ -22,6 +22,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.android.SphericalUtil;
 
@@ -34,8 +35,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private GoogleMap mMap; //mapa de google con el que se trabaja
     private GoogleApiClient mGoogleApiClient; //API de cliente para recoger la ubicacion
 
-    private LatLng myposition; //variable donde se guarda Latitud y Longitud
+    private Marker Tesoro;
     private LatLng treasure = new LatLng(42.236905, -8.712710); //lugar del tesoro
+    private LatLng myposition; //variable donde se guarda Latitud y Longitud
     LatLng center = new LatLng(42.237024, -8.713554); //centro del circulo
 
     @Override
@@ -91,7 +93,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.getUiSettings().setMapToolbarEnabled(false); //toolbar innecesario desactivado
 
         //adición de marca invisible en el mapa del lugar del tesoro
-        mMap.addMarker(new MarkerOptions().position(treasure).title("tesoro").visible(false));
+        Tesoro = mMap.addMarker(new MarkerOptions().position(treasure).title("tesoro").visible(false));
 
         //adición del circulo donde se encuentra la marca
 
@@ -168,7 +170,20 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      */
     public void CalculateDistance(LatLng destino) {
         int distancia = (int) SphericalUtil.computeDistanceBetween(myposition, destino);
-        Toast.makeText(this, "Estas a " + distancia + "m del punto", Toast.LENGTH_LONG).show();
+        if(distancia >200){
+            Toast.makeText(this, "Muy frío", Toast.LENGTH_LONG).show();
+        } else if(distancia > 150){
+            Toast.makeText(this, "Frío", Toast.LENGTH_LONG).show();
+        } else if(distancia > 100){
+            Toast.makeText(this, "Templado", Toast.LENGTH_LONG).show();
+        } else if(distancia > 50){
+            Toast.makeText(this, "Caliente", Toast.LENGTH_LONG).show();
+        } else if(distancia > 20){
+            Toast.makeText(this, "¡MUY CALIENTE!", Toast.LENGTH_LONG).show();
+        } else if(distancia <=20){
+            Toast.makeText(this, "¡Lo encontraste!", Toast.LENGTH_LONG).show();
+            Tesoro.setVisible(true);
+        }
     }
 
     @Override
