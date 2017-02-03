@@ -29,6 +29,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private GoogleMap mMap;
     private GoogleApiClient mGoogleApiClient;
     private Location myLocation;
+    LatLng myLatLng;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,8 +88,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
                 myLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
                 if (myLocation != null) {
-
-
+                    myLatLng = new LatLng(myLocation.getLatitude(),myLocation.getLongitude());
                 } else {
                     Toast.makeText(this, "Ubicación no encontrada", Toast.LENGTH_LONG).show();
                 }
@@ -115,9 +115,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         } else {
             myLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
             if (myLocation != null) {
-
-
-
+                myLatLng = new LatLng(myLocation.getLatitude(),myLocation.getLongitude());
             } else {
                 Toast.makeText(this, "Ubicación no encontrada", Toast.LENGTH_LONG).show();
             }
