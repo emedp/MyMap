@@ -63,6 +63,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public void onClick(View v) {
                 CalculateDistance(treasure);
+
             }
         });
     }
@@ -100,7 +101,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         CircleOptions treasure_zone = new CircleOptions()
                 .center(center)
-                .radius(100)
+                .radius(150)
                 .strokeColor(Color.parseColor("#084B8A"));
         mMap.addCircle(treasure_zone);
     }
@@ -170,7 +171,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      *
      * @param destino recoge las coordenadas del punto al que se mide la distancia
      */
-    public void CalculateDistance(LatLng destino) {
+    public int CalculateDistance(LatLng destino) {
         //cada vez que el usuario llame al metodo la variable myposition se actualizará gracias al API de cliente de google
         //con la posicion actualizada se obtiene la distancia precisa
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
@@ -196,6 +197,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             Toast.makeText(this, "¡Lo encontraste!", Toast.LENGTH_LONG).show();
             Tesoro.setVisible(true);
         }
+        return distancia;
     }
 
     @Override
