@@ -130,8 +130,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     //una vez cargada mi localización se anima el mapa hasta el circulo donde se esconde el tesoro
                     mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(myposition, 17));
                 }
-                //una vez cargada mi localización se anima el mapa hasta el circulo donde se esconde el tesoro
-                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(myposition, 17));
             }
         }
     }
