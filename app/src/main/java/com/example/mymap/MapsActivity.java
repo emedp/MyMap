@@ -29,7 +29,7 @@ import com.google.maps.android.SphericalUtil;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
+        GoogleApiClient.OnConnectionFailedListener, View.OnClickListener, GoogleMap.OnMarkerClickListener {
 
     private GoogleMap mMap; //mapa de google con el que se trabaja
     private GoogleApiClient mGoogleApiClient; //API de cliente para recoger la ubicacion
@@ -91,7 +91,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         //adición de marca invisible en el mapa del lugar del tesoro
         LatLng treasure = new LatLng(42.236905, -8.712710); //lugar de la marca
         Marca = mMap.addMarker(new MarkerOptions().position(treasure).title("tesoro").visible(false));
-
+        mMap.setOnMarkerClickListener(this);
         //adición del circulo donde se encuentra la marca
         LatLng center = new LatLng(42.237024, -8.713554); //centro del circulo
         Zona = mMap.addCircle(new CircleOptions().center(center).radius(150).strokeColor(Color.parseColor("#084B8A")));
@@ -208,5 +208,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     protected void onStop() {
         super.onStop();
         mGoogleApiClient.disconnect();
+    }
+
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+
+        return false;
     }
 }
