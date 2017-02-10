@@ -20,6 +20,7 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.Circle;
 import com.google.android.gms.maps.model.CircleOptions;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
@@ -36,6 +37,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private GoogleApiClient mGoogleApiClient; //API de cliente para recoger la ubicacion
 
     private Marker Tesoro;
+    private Circle Zona;
     private LatLng treasure = new LatLng(42.236905, -8.712710); //lugar del tesoro
     private Location myLocation;
     private LatLng myposition; //variable donde se guarda Latitud y Longitud
@@ -98,12 +100,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         Tesoro = mMap.addMarker(new MarkerOptions().position(treasure).title("tesoro").visible(false));
 
         //adición del circulo donde se encuentra la marca
-
-        CircleOptions treasure_zone = new CircleOptions()
-                .center(center)
-                .radius(150)
-                .strokeColor(Color.parseColor("#084B8A"));
-        mMap.addCircle(treasure_zone);
+        Zona = mMap.addCircle(new CircleOptions().center(center).radius(150).strokeColor(Color.parseColor("#084B8A")));
     }
 
     /**
@@ -171,7 +168,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
      *
      * @param destino recoge las coordenadas del punto al que se mide la distancia
      */
-    public int CalculateDistance(LatLng destino) {
+    public void CalculateDistance(LatLng destino) {
         //cada vez que el usuario llame al metodo la variable myposition se actualizará gracias al API de cliente de google
         //con la posicion actualizada se obtiene la distancia precisa
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
@@ -197,7 +194,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             Toast.makeText(this, "¡Lo encontraste!", Toast.LENGTH_LONG).show();
             Tesoro.setVisible(true);
         }
-        return distancia;
     }
 
     @Override
