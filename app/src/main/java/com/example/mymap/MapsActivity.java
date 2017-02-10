@@ -31,17 +31,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener {
 
-    private static final int LOCATION_REQUEST_CODE = 1; //peticion de la ubicacion
-    private static final int REQUEST_LOCATION = 2; //obtencion de latitud y longitud
     private GoogleMap mMap; //mapa de google con el que se trabaja
     private GoogleApiClient mGoogleApiClient; //API de cliente para recoger la ubicacion
+    private static final int LOCATION_REQUEST_CODE = 1; //peticion de la ubicacion
+    private static final int REQUEST_LOCATION = 2; //obtencion de latitud y longitud
 
-    private Marker Tesoro;
-    private Circle Zona;
-    private LatLng treasure = new LatLng(42.236905, -8.712710); //lugar del tesoro
+    private Marker Marca; //marca cambiante
+    private Circle Zona; //circulo limitador de zona cambiante
     private Location myLocation;
     private LatLng myposition; //variable donde se guarda Latitud y Longitud
-    private LatLng center = new LatLng(42.237024, -8.713554); //centro del circulo
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,7 +62,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         distancia.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                CalculateDistance(treasure);
+                CalculateDistance(Marca.getPosition());
 
             }
         });
@@ -97,9 +95,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.getUiSettings().setMapToolbarEnabled(false); //toolbar innecesario desactivado
 
         //adición de marca invisible en el mapa del lugar del tesoro
-        Tesoro = mMap.addMarker(new MarkerOptions().position(treasure).title("tesoro").visible(false));
+        LatLng treasure = new LatLng(42.236905, -8.712710); //lugar de la marca
+        Marca = mMap.addMarker(new MarkerOptions().position(treasure).title("tesoro").visible(false));
 
         //adición del circulo donde se encuentra la marca
+        LatLng center = new LatLng(42.237024, -8.713554); //centro del circulo
         Zona = mMap.addCircle(new CircleOptions().center(center).radius(150).strokeColor(Color.parseColor("#084B8A")));
     }
 
@@ -128,10 +128,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 if (myLocation != null) {
                     myposition = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
                     //una vez cargada mi localización se anima el mapa hasta el circulo donde se esconde el tesoro
-                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(center, 17));
+                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(myposition, 17));
                 }
                 //una vez cargada mi localización se anima el mapa hasta el circulo donde se esconde el tesoro
-                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(center, 17));
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(myposition, 17));
             }
         }
     }
@@ -192,7 +192,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             Toast.makeText(this, "¡MUY CALIENTE!\nEstas a " + distancia + "m del punto", Toast.LENGTH_LONG).show();
         } else if (distancia <= 20) {
             Toast.makeText(this, "¡Lo encontraste!", Toast.LENGTH_LONG).show();
-            Tesoro.setVisible(true);
+            Marca.setVisible(true);
         }
     }
 
