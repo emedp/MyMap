@@ -29,7 +29,7 @@ import com.google.maps.android.SphericalUtil;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener {
+        GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
 
     private GoogleMap mMap; //mapa de google con el que se trabaja
     private GoogleApiClient mGoogleApiClient; //API de cliente para recoger la ubicacion
@@ -38,7 +38,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private Marker Marca; //marca cambiante
     private Circle Zona; //circulo limitador de zona cambiante
-    private Location myLocation;
+    private Location myLocation; // variable para guardar posicion del usuario
     private LatLng myposition; //variable donde se guarda Latitud y Longitud
 
     @Override
@@ -59,13 +59,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         //relacionado boton con boton del xml
         Button distancia = (Button) findViewById(R.id.distancia);
-        distancia.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                CalculateDistance(Marca.getPosition());
-
-            }
-        });
+        distancia.setOnClickListener(this);
     }
 
     /**
@@ -150,7 +144,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             if (myLocation != null) {
                 myposition = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
                 //una vez cargada mi localización se anima el mapa hasta el circulo donde se esconde el tesoro
-                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(center, 17));
+                mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(myposition, 17));
             }
         } else {
             //al no cumplirse el if significa que el permiso no esta concedido por lo que se pide
@@ -159,15 +153,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 
-    /**
-     * calcula la distancia en metros de la posicion del usuario hasta el destino
-     * segun la distancia en metros indica al usuario si esta cerca o lejos con las palabras
-     * frio o caliente si esta a 20 m o menos le muestra la marca del tesoro si no un mensaje con la distancia
-     *
-     * @param destino recoge las coordenadas del punto al que se mide la distancia
-     */
-    public void CalculateDistance(LatLng destino) {
-        //cada vez que el usuario llame al metodo la variable myposition se actualizará gracias al API de cliente de google
+    @Override
+    public void onClick(View v) {
+        //cada vez que el usuario pulse el boton la variable myposition se actualizará gracias al API de cliente de google
         //con la posicion actualizada se obtiene la distancia precisa
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
@@ -177,7 +165,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 myposition = new LatLng(myLocation.getLatitude(), myLocation.getLongitude());
             }
         }
-        int distancia = (int) SphericalUtil.computeDistanceBetween(myposition, destino);
+        int distancia = (int) SphericalUtil.computeDistanceBetween(myposition, Marca.getPosition());
         if (distancia > 200) {
             Toast.makeText(this, "BRRR esto esta CONGELAO'\nEstas a " + distancia + "m del punto", Toast.LENGTH_LONG).show();
         } else if (distancia > 150) {
