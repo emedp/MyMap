@@ -29,7 +29,9 @@ import com.google.maps.android.SphericalUtil;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener, View.OnClickListener, GoogleMap.OnMarkerClickListener {
+        GoogleApiClient.OnConnectionFailedListener,
+        View.OnClickListener,
+        GoogleMap.OnMarkerClickListener {
 
     private GoogleMap mMap; //mapa de google con el que se trabaja
     private GoogleApiClient mGoogleApiClient; //API de cliente para recoger la ubicacion
