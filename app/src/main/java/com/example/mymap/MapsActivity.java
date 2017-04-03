@@ -1,5 +1,6 @@
 package com.example.mymap;
 
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.location.Location;
@@ -26,6 +27,9 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.android.SphericalUtil;
+
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback,
         GoogleApiClient.ConnectionCallbacks,
@@ -91,7 +95,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.getUiSettings().setMapToolbarEnabled(false); //toolbar innecesario desactivado
 
         //adición de marca invisible en el mapa del lugar del tesoro
-        LatLng treasure = new LatLng(42.236905, -8.712710); //lugar de la marca
+
+        LatLng treasure = new LatLng(42.236611, -8.713828); //lugar de la marca
+        //42.236905, -8.712710
         Marca = mMap.addMarker(new MarkerOptions().position(treasure).title("tesoro").visible(false));
         mMap.setOnMarkerClickListener(this);
         //adición del circulo donde se encuentra la marca
@@ -214,7 +220,25 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     @Override
     public boolean onMarkerClick(Marker marker) {
-
+        //Se instancia un objeto de la clase IntentIntegrator
+        IntentIntegrator scanIntegrator = new IntentIntegrator(this);
+        //Se procede con el proceso de scaneo
+        scanIntegrator.initiateScan();
         return false;
+    }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent intent) {
+        //Se obtiene el resultado del proceso de scaneo y se parsea
+        IntentResult scanningResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
+        if (scanningResult != null) {
+            //Quiere decir que se obtuvo resultado por lo tanto:
+            //Desplegamos en pantalla el contenido del código de barra scaneado
+            String scanContent = scanningResult.getContents();
+            //Desplegamos en pantalla el nombre del formato del código de barra scaneado
+            String scanFormat = scanningResult.getFormatName();
+            Toast.makeText(this, scanContent+" , "+scanFormat, Toast.LENGTH_SHORT).show();
+        }else{
+            Toast.makeText(this, "No se ha recibido datos del scaneo!", Toast.LENGTH_SHORT).show();
+        }
     }
 }
