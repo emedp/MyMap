@@ -1,5 +1,7 @@
 package com.example.mymap;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
@@ -80,6 +82,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap; //asignacion del mapa con el atributo de clase instanciado
 
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Pulsa el botón para saber a que distancia estas del tesoro.\n"+
+                "Cuando aparezca la marca, pulsala y escanea el codigo QR.")
+                .setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                    //información del juego leida
+                    }
+                });
+        builder.create();
+        builder.show();
+
         //comprobación del permiso para poder utilizar el GPS
         if (ContextCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
                 == PackageManager.PERMISSION_GRANTED) {
@@ -96,7 +109,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         //adición de marca invisible en el mapa del lugar del tesoro
 
-        LatLng treasure = new LatLng(42.236611, -8.713828); //lugar de la marca
+        LatLng treasure = new LatLng(42.242550, -8.706544); //lugar de la marca
         //42.236905, -8.712710
         Marca = mMap.addMarker(new MarkerOptions().position(treasure).title("tesoro").visible(false));
         mMap.setOnMarkerClickListener(this);
@@ -222,7 +235,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public boolean onMarkerClick(Marker marker) {
         //Se instancia un objeto de la clase IntentIntegrator
         IntentIntegrator scanIntegrator = new IntentIntegrator(this);
-        //Se procede con el proceso de scaneo
+        //Se llama al escaner
         scanIntegrator.initiateScan();
         return false;
     }
@@ -231,12 +244,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         //Se obtiene el resultado del proceso de scaneo y se parsea
         IntentResult scanningResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, intent);
         if (scanningResult != null) {
-            //Quiere decir que se obtuvo resultado por lo tanto:
-            //Desplegamos en pantalla el contenido del código de barra scaneado
+            //se obtiene el contenido ya que el escaner no ha sido nulo
             String scanContent = scanningResult.getContents();
-            //Desplegamos en pantalla el nombre del formato del código de barra scaneado
-            String scanFormat = scanningResult.getFormatName();
-            Toast.makeText(this, scanContent+" , "+scanFormat, Toast.LENGTH_SHORT).show();
+            if (scanContent.equalsIgnoreCase("PREMIO!")){
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setMessage("HAS ENCONTRADO EL TESORO!\n"+"Saca una foto al codigo QR y vuelve al punto de partida")
+                        .setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+
+                            }
+                        });
+                builder.create();
+                builder.show();
+            }
         }else{
             Toast.makeText(this, "No se ha recibido datos del scaneo!", Toast.LENGTH_SHORT).show();
         }
