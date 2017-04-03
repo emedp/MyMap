@@ -109,8 +109,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         //adición de marca invisible en el mapa del lugar del tesoro
 
-        LatLng treasure = new LatLng(42.242550, -8.706544); //lugar de la marca
-        //42.236905, -8.712710
+        LatLng treasure = new LatLng(42.236905, -8.712710); //lugar de la marca
         Marca = mMap.addMarker(new MarkerOptions().position(treasure).title("tesoro").visible(false));
         mMap.setOnMarkerClickListener(this);
         //adición del circulo donde se encuentra la marca
@@ -248,10 +247,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             String scanContent = scanningResult.getContents();
             if (scanContent.equalsIgnoreCase("PREMIO!")){
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.setMessage("HAS ENCONTRADO EL TESORO!\n"+"Saca una foto al codigo QR y vuelve al punto de partida")
+                builder.setMessage("HAS ENCONTRADO EL TESORO!\n"+"Saca una foto al codigo QR y vuelve al punto de partida.")
                         .setPositiveButton("Aceptar", new DialogInterface.OnClickListener() {
                             public void onClick(DialogInterface dialog, int id) {
-
+                                Toast.makeText(MapsActivity.this, "abre la cámara!", Toast.LENGTH_SHORT).show();
                             }
                         });
                 builder.create();
